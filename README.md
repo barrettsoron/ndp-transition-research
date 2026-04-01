@@ -16,7 +16,7 @@ Plain-text transcripts of publicly available videos relevant to the NDP transiti
 
 ### `stephen-lewis/`
 
-Public materials related to Stephen Lewis (1937–2026) — tributes, speeches, interviews, and commentary on his legacy in the context of the 2026 leadership transition.
+An open archive of publicly available speeches, interviews, and writing by and about Stephen Lewis. His work spans decades of Canadian politics, UN diplomacy, and global health advocacy — material that belongs in the commons.
 
 ---
 
