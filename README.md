@@ -14,6 +14,10 @@ This repository contains **only public, non-internal, non-strategic material** �
 
 Plain-text transcripts of publicly available videos relevant to the NDP transition. Sourced from YouTube auto-generated captions unless otherwise noted.
 
+### `stephen-lewis/`
+
+Public materials related to Stephen Lewis (1937–2026) — tributes, speeches, interviews, and commentary on his legacy in the context of the 2026 leadership transition.
+
 ---
 
 *Maintained by [@barrettsoron](https://github.com/barrettsoron)*
