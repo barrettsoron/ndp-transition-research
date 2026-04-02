@@ -4,6 +4,7 @@ date: 2026-03-29
 source: https://www.ndp.ca/news/avi-lewis-elected-leader-ndp
 outlet: Canada's NDP
 language: en
+type: statement
 ---
 
 Canada's New Democrats have selected Avi Lewis as their new party leader. He secured 56% of votes cast on the first ballot of the 2026 leadership race.

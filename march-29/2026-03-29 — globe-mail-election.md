@@ -5,6 +5,8 @@ source: https://www.theglobeandmail.com/canada/article-ndp-leader-elected-avi-le
 author: Temur Durrani
 outlet: The Globe and Mail
 language: en
+type: article
+stub: true
 ---
 
 > *Note: full article behind paywall. Key facts noted from available excerpt.*

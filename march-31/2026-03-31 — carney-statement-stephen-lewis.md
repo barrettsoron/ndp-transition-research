@@ -2,7 +2,10 @@
 title: Statement by Prime Minister Carney on Stephen Lewis
 date: 2026-03-31
 source: https://www.pm.gc.ca/en/news/statements/2026/03/31/statement-prime-minister-carney-stephen-lewis
-author: Prime Minister Mark Carney
+author: Mark Carney
+outlet: Office of the Prime Minister
+language: en
+type: statement
 ---
 
 # Statement by Prime Minister Carney on Stephen Lewis

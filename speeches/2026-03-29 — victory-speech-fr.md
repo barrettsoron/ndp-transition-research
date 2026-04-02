@@ -1,11 +1,12 @@
 ---
 title: Discours de victoire d'Avi Lewis
 date: 2026-03-29
-sources:
-  - https://lewisforleader.ca/fr/declarations#2026-03-29-victory-speech
-  - https://lewisforleader.ca/statements#2026-03-29-victory-speech
+source: https://lewisforleader.ca/fr/declarations#2026-03-29-victory-speech
 video: https://www.youtube.com/watch?v=GzrzRJGRz5A&t=356s
 language: fr
+type: speech
+speakers:
+  - Avi Lewis
 ---
 
 # Discours de victoire d'Avi Lewis
