@@ -1,0 +1,111 @@
+/**
+ * Derive section slugs and labels from the content collection at build time.
+ * No hardcoded section lists — new date folders are picked up automatically.
+ */
+
+/** Labels for non-date sections. Date sections derive labels from their slug. */
+const FIXED_LABELS: Record<string, string> = {
+  'speeches': 'Speeches',
+  'stephen-lewis': 'Stephen Lewis',
+  'transcript-archive': 'Transcript Archive',
+};
+
+/** Descriptions for non-date sections. Date sections get a generic description. */
+const FIXED_DESCRIPTIONS: Record<string, string> = {
+  'speeches': 'Victory speech (EN/FR) and leadership showcase',
+  'stephen-lewis': 'Historical speeches and legacy context',
+  'transcript-archive': 'Video transcripts',
+};
+
+/** Special label overrides for specific date sections. */
+const DATE_LABEL_OVERRIDES: Record<string, string> = {
+  'march-29': 'March 29 — Convention Day',
+};
+
+/**
+ * Extract unique section slugs from a content collection.
+ * Sections are the first path segment of each article's id (e.g., "march-29" from "march-29/cbc-analysis").
+ * Returns date sections sorted chronologically first, then fixed sections in a stable order.
+ */
+export function getSections(articles: { id: string }[]): string[] {
+  const slugs = new Set<string>();
+  for (const a of articles) {
+    const section = a.id.split('/')[0];
+    if (section) slugs.add(section);
+  }
+
+  const fixedOrder = ['speeches', 'stephen-lewis', 'transcript-archive'];
+  const dateSections = [...slugs]
+    .filter(s => !fixedOrder.includes(s))
+    .sort(); // alphabetical sort puts dates in order (april-01 < april-02 < march-29 etc.)
+  const fixed = fixedOrder.filter(s => slugs.has(s));
+
+  // Sort date sections by parsing month and day for correct chronological order
+  dateSections.sort((a, b) => {
+    const toSortKey = (slug: string) => {
+      const months: Record<string, number> = {
+        january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+        july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
+      };
+      const parts = slug.split('-');
+      const month = months[parts[0]] ?? 0;
+      const day = parseInt(parts[1] ?? '0', 10);
+      return month * 100 + day;
+    };
+    return toSortKey(a) - toSortKey(b);
+  });
+
+  return [...dateSections, ...fixed];
+}
+
+/**
+ * Generate a human-readable label for a section slug.
+ * Date sections (e.g., "april-02") become "April 2".
+ * Fixed sections use their predefined labels.
+ */
+export function getSectionLabel(slug: string): string {
+  if (DATE_LABEL_OVERRIDES[slug]) return DATE_LABEL_OVERRIDES[slug];
+  if (FIXED_LABELS[slug]) return FIXED_LABELS[slug];
+
+  // Parse date sections: "march-29" → "March 29", "april-02" → "April 2"
+  const parts = slug.split('-');
+  if (parts.length === 2) {
+    const month = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+    const day = parseInt(parts[1], 10);
+    if (!isNaN(day)) return `${month} ${day}`;
+  }
+
+  // Fallback: title-case the slug
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/**
+ * Generate a short nav label for the header.
+ * Date sections get abbreviated: "march-29" → "Mar 29".
+ * Fixed sections get short names.
+ */
+export function getSectionNavLabel(slug: string): string {
+  const shortFixed: Record<string, string> = {
+    'speeches': 'Speeches',
+    'stephen-lewis': 'Stephen Lewis',
+    'transcript-archive': 'Transcripts',
+  };
+  if (shortFixed[slug]) return shortFixed[slug];
+
+  const parts = slug.split('-');
+  if (parts.length === 2) {
+    const month = parts[0].charAt(0).toUpperCase() + parts[0].slice(1, 4);
+    const day = parseInt(parts[1], 10);
+    if (!isNaN(day)) return `${month} ${day}`;
+  }
+
+  return slug;
+}
+
+/**
+ * Get a description for a section. Used on the home page.
+ */
+export function getSectionDescription(slug: string): string {
+  if (FIXED_DESCRIPTIONS[slug]) return FIXED_DESCRIPTIONS[slug];
+  return 'Coverage and analysis';
+}

@@ -1,4 +1,7 @@
 ---
+import { getCollection } from 'astro:content';
+import { getSections, getSectionNavLabel } from '../lib/sections';
+
 interface Props {
   title: string;
   description?: string;
@@ -8,6 +11,9 @@ const { title, description, ogType = 'website' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const siteDesc = 'A public archive covering the NDP leadership transition following Avi Lewis\'s election as federal NDP leader, March 2026.';
 const metaDesc = description || siteDesc;
+
+const all = await getCollection('articles');
+const navSections = getSections(all);
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -37,13 +43,9 @@ const metaDesc = description || siteDesc;
     <header data-pagefind-ignore>
       <nav>
         <a class="home" href={base}>NDP Transition Research 2026</a>
-        <a href={`${base}march-29/`}>Mar 29</a>
-        <a href={`${base}march-30/`}>Mar 30</a>
-        <a href={`${base}march-31/`}>Mar 31</a>
-        <a href={`${base}april-01/`}>Apr 1</a>
-        <a href={`${base}speeches/`}>Speeches</a>
-        <a href={`${base}stephen-lewis/`}>Stephen Lewis</a>
-        <a href={`${base}transcript-archive/`}>Transcripts</a>
+        {navSections.map(s => (
+          <a href={`${base}${s}/`}>{getSectionNavLabel(s)}</a>
+        ))}
         <div class="search-wrap">
           <slot name="search" />
         </div>

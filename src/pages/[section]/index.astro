@@ -1,15 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import { getSections, getSectionLabel } from '../../lib/sections';
 
 export async function getStaticPaths() {
-  const sections = [
-    'march-29', 'march-30', 'march-31', 'april-01',
-    'speeches', 'stephen-lewis', 'transcript-archive',
-  ];
   const all = await getCollection('articles');
+  const sectionSlugs = getSections(all);
 
-  return sections.map(section => ({
+  return sectionSlugs.map(section => ({
     params: { section },
     props: {
       articles: all
@@ -23,17 +21,7 @@ const { section } = Astro.params;
 const { articles } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
-const labels: Record<string, string> = {
-  'march-29': 'March 29 — Convention Day',
-  'march-30': 'March 30',
-  'march-31': 'March 31',
-  'april-01': 'April 1',
-  'speeches': 'Speeches',
-  'stephen-lewis': 'Stephen Lewis',
-  'transcript-archive': 'Transcript Archive',
-};
-
-const title = labels[section] ?? section;
+const title = getSectionLabel(section);
 ---
 <Base title={title}>
   <style>

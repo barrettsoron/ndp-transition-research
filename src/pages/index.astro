@@ -2,24 +2,22 @@
 import Base from '../layouts/Base.astro';
 import Search from '../components/Search.astro';
 import { getCollection } from 'astro:content';
+import { getSections, getSectionLabel, getSectionDescription } from '../lib/sections';
 
 const all = await getCollection('articles');
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
-const sections = [
-  { slug: 'march-29', label: 'March 29 — Convention Day', desc: 'Leadership vote results and immediate reactions' },
-  { slug: 'march-30', label: 'March 30', desc: 'Post-convention analysis and first-day coverage' },
-  { slug: 'march-31', label: 'March 31', desc: 'Stephen Lewis obituary coverage and tributes' },
-  { slug: 'april-01', label: 'April 1', desc: 'Continued coverage' },
-  { slug: 'speeches', label: 'Speeches', desc: 'Victory speech (EN/FR) and leadership showcase' },
-  { slug: 'stephen-lewis', label: 'Stephen Lewis', desc: 'Historical speeches and legacy context' },
-  { slug: 'transcript-archive', label: 'Transcript Archive', desc: 'Video transcripts' },
-];
+const sectionSlugs = getSections(all);
+const sections = sectionSlugs.map(slug => ({
+  slug,
+  label: getSectionLabel(slug),
+  desc: getSectionDescription(slug),
+}));
 
 const countBySection = Object.fromEntries(
-  sections.map(s => [
-    s.slug,
-    all.filter(a => a.id.startsWith(`${s.slug}/`) && !a.data.stub).length,
+  sectionSlugs.map(s => [
+    s,
+    all.filter(a => a.id.startsWith(`${s}/`) && !a.data.stub).length,
   ])
 );
 ---
