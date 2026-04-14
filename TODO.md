@@ -17,71 +17,17 @@ Active work to move this project toward automated daily updates via Claude Code 
 - [ ] Test formatting: give Claude an article URL and ask it to add it to the archive — check the output matches existing files
 - [ ] Iterate on the `CLAUDE.md` instructions until output is consistently right
 
-## Build the Source List
+## Automation — Done
 
-- [ ] Identify RSS feeds for target outlets:
-  - [ ] ndp.ca/news
-  - [ ] CBC Politics
-  - [ ] The Tyee
-  - [ ] Rabble
-  - [ ] Jacobin (Canada tag)
-  - [ ] Global News Politics
-  - [ ] Common Dreams
-  - [ ] Others as identified
-- [ ] For each feed, confirm the URL returns valid RSS/Atom content
-- [ ] Document the feed list in a `sources.md` or similar file in the repo
-- [ ] Identify paywalled outlets that will need manual stub creation (La Presse, Le Devoir, Globe and Mail, Bloomberg)
+- [x] Source list: Google Alerts RSS feeds for "Avi Lewis" and "federal ndp" — feed URLs stored in the scheduled task prompt (not committed to repo)
+- [x] Fetch script: `scripts/fetch-alerts.js` — fetches Atom feeds, decodes Google redirect URLs, filters social domains, deduplicates against existing archive `source:` fields, outputs JSON
+- [x] Scheduled task: `ndp-daily-archive` — runs daily at 9:00 AM, fetches new articles, runs defuddle, creates stubs for paywalled content, opens a PR with skipped items listed for follow-up
 
-## Write the Fetch Script
+## Automation — Still to do
 
-The scheduled task should not re-derive RSS parsing and deduplication logic from scratch every day. A short Node script handles the mechanical work (fetching feeds, parsing XML, checking for duplicates, running Defuddle). Claude's scheduled task then handles the editorial work (formatting, frontmatter, file naming, PR creation).
-
-- [ ] Write `scripts/fetch-new-articles.js` — a Node script that:
-  - [ ] Reads `sources.md` for the list of RSS feed URLs
-  - [ ] Fetches each feed and parses the XML for article entries
-  - [ ] Filters to articles published since yesterday
-  - [ ] Filters out articles already in the archive (by comparing URLs against `source:` fields in existing frontmatter)
-  - [ ] Runs `defuddle parse <url> --md` on each new article
-  - [ ] Saves raw Defuddle output to a `staging/` folder, one file per article, with the source URL and metadata in a simple header
-- [ ] Add `staging/` to `.gitignore` (it's a working directory, not archive content)
-- [ ] Test the script manually: `node scripts/fetch-new-articles.js`
-- [ ] Confirm it produces clean raw markdown in `staging/` with no duplicates
-
-## Create the Scheduled Task
-
-- [ ] Open Claude Code Desktop, go to Schedule in the sidebar
-- [ ] Create a new local task:
-  - **Name:** `ndp-daily-archive`
-  - **Folder:** this repo's local path
-  - **Frequency:** Daily (choose a morning time, e.g., 9:00 AM Pacific)
-  - **Prompt:** (draft below — refine after manual testing)
-- [ ] Configure permissions: allow Bash (node, git, gh), Read, Write, Edit
-- [ ] Run it manually once with "Run now" and review the output
-- [ ] Review the session — check that articles are formatted correctly, branch is created, PR is opened
-- [ ] Iterate on the task prompt until the output is reliable
-- [ ] Enable the repeating schedule
-- [ ] Monitor for a week — review each daily PR for quality
-
-### Draft scheduled task prompt
-
-```
-Run the fetch script to check for new articles:
-  node scripts/fetch-new-articles.js
-
-If the staging/ folder is empty, there's nothing new — stop here.
-
-For each file in staging/:
-1. Read the raw content and metadata
-2. Format as a markdown file following the conventions in CLAUDE.md
-3. Name the file following the convention: YYYY-MM-DD — outlet-slug-description.md
-4. Save to the correct date folder (create the folder if needed)
-
-After processing all staged articles:
-1. Clear the staging/ folder
-2. Create a branch named daily/YYYY-MM-DD
-3. Commit all new files with a descriptive message
-4. Push the branch and open a PR with a summary of what was added
-```
+- [ ] Run the task manually once ("Run now" in the Scheduled sidebar) and approve tool permissions so future runs don't pause
+- [ ] Review the first daily PR for quality — adjust task prompt if formatting or editorial judgment is off
+- [ ] Monitor for a week
 
 ## Test the Dispatch Workflow (Mobile)
 
