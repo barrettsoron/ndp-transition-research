@@ -15,7 +15,21 @@ export async function getStaticPaths() {
 
 const { section } = Astro.params;
 const { entry } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const { Content } = await render(entry);
+
+// Compute prev/next within the section
+const all = await getCollection('articles');
+const sectionArticles = all
+  .filter(a => a.id.startsWith(`${section}/`))
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+
+const idx = sectionArticles.findIndex(a => a.id === entry.id);
+const prevEntry = idx > 0 ? sectionArticles[idx - 1] : null;
+const nextEntry = idx < sectionArticles.length - 1 ? sectionArticles[idx + 1] : null;
+
+const prevArticle = prevEntry ? { title: prevEntry.data.title, href: `${base}${prevEntry.id}/` } : undefined;
+const nextArticle = nextEntry ? { title: nextEntry.data.title, href: `${base}${nextEntry.id}/` } : undefined;
 ---
 <Article
   title={entry.data.title}
@@ -30,6 +44,8 @@ const { Content } = await render(entry);
   note={entry.data.note}
   stub={entry.data.stub}
   section={section}
+  prevArticle={prevArticle}
+  nextArticle={nextArticle}
 >
   <Content />
 </Article>
