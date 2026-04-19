@@ -5,7 +5,7 @@ source: https://www.cbc.ca/radio/thehouse
 outlet: CBC
 language: en
 type: transcript
-note: "Episode of CBC The House hosted by Catherine Cullen, broadcast March 28, 2026 — the day before the NDP leadership convention in Winnipeg. Topics: NDP leadership race overview (Avi Lewis as frontrunner, Heather McPherson, Rob Ashton, Tony McQuaill, Tenille Johnston); Alberta NDP leader Nahed Nenshi on his new pipeline-friendly energy policy and non-membership in the federal party; strategist panel (Jordan Leichnitz, Marcy Serks, Kate Harrison) on the race, the Michael Ma forced labour controversy, and an Auditor General report on international students; the Supreme Court hearing on Quebec's Bill 21 / Notwithstanding Clause, with Ontario AG Doug Downie; CBC's Kyle Pax on the energy sector. Transcript reconstructed from mlx_whisper output with hallucination loops removed; two significant gaps remain unrecovered (approx. 19:10–22:42 partially recovered via re-extraction; 37:56–49:32 lost to hallucination loop during Downie interview)."
+note: "Episode of CBC The House hosted by Catherine Cullen, broadcast March 28, 2026 — the day before the NDP leadership convention in Winnipeg. Topics: NDP leadership race overview (Avi Lewis as frontrunner, Heather McPherson, Rob Ashton, Tony McQuaill, Tenille Johnston); Alberta NDP leader Nahed Nenshi on his new pipeline-friendly energy policy and non-membership in the federal party; strategist panel (Jordan Leichnitz, Marcy Serks, Kate Harrison) on the race, the Michael Ma forced labour controversy, and an Auditor General report on international students. Transcript reconstructed from mlx_whisper output with hallucination loops removed."
 speakers:
   - Catherine Cullen
   - Wab Kinew
@@ -19,9 +19,6 @@ speakers:
   - Kate Harrison
   - Michael Ma
   - Margaret McQuigge Johnston
-  - Joe Ortega
-  - Doug Downie
-  - Kyle Pax
 ---
 
 ## Cold open
@@ -243,89 +240,3 @@ But, you know, the government should be focused, I guess, on what they can do mo
 **Marcy Serks, Kate Harrison, Jordan Leichnitz:** Thank you. Thank you. Thank you.
 
 **Catherine Cullen:** Marcy Serks, Kate Harrison, and Jordan Leichnitz.
-
----
-
-## Bill 21 and the Notwithstanding Clause
-
-*[Mid-episode]*
-
-**Catherine Cullen:** Lots more coming up on the House podcast. After the break, this week saw one of the longest Supreme Court hearings in history. Why some say this case could change Canada.
-
----
-
-**Joe Ortega:** We're here because Muslim women are not second class citizens. We're here because Muslim women who choose to teach should not have to choose — or be forced to choose — between her conscience and her career.
-
-**Catherine Cullen:** Joe Ortega of Montreal's English School Board, one of the key voices in a case that could change Canada. This week, the Supreme Court held one of the longest hearings in its history about Quebec's secularism law, known as Bill 21. It prevents some civil servants from wearing religious symbols at work. For example, no hijabs, kippahs, or turbans if you're a police officer or a teacher. The law is popular in Quebec. And the province's government says it's important for the separation of church and state. But this Supreme Court case has become about a lot more than that.
-
-> The backdrop of this case is religious symbols. But the true issue is the limit on legislative power on one hand and judicial power on the other.
-
-Those are the words of David Grossman, a lawyer for one Muslim woman trying to fight the Quebec law. In order to shield the secularism law from court challenges, Quebec's government preemptively used the Notwithstanding Clause — also known as Section 33 of the Charter of Rights and Freedoms. It allows a government to have a law even if it violates a charter right. But it's the subject of vigorous debate.
-
-> The notwithstanding clause is the last protection that we have in Quebec to make sure that our National Assembly has the right to protect our value of secularity, of the state, separation between church and state.
-
-And on the other side:
-
-> There must be limits on the use of the notwithstanding clause. If the clause can be used without meaningful constraint, courts could be rendered powerless even when government sought to legalize something.
-
-In the past, it was rarely used, but that has changed. When Quebec used it preemptively, some other provinces thought that sounded like a good idea. Just a few examples: Saskatchewan used it to pass legislation around gender identity in schools. Alberta did the same. And Ontario used it to try to stop education workers from striking.
-
-The federal government is telling the Supreme Court it wants to see the Notwithstanding Clause limited, arguing it shouldn't be used to permanently suspend a right. It also says that even if the Notwithstanding Clause is used, courts should still weigh in on whether rights are being violated by that law. But some provinces say any new limits on the Notwithstanding Clause risk, quote, "serious, irreparable, and unpredictable harm to the Canadian Federation."
-
-Those are the words of my next guest, Ontario's Attorney General, Doug Downie.
-
----
-
-### Ontario Attorney General Doug Downie interview
-
-**Catherine Cullen:** Welcome to the house.
-
-**Doug Downie:** Thank you for having me.
-
-**Catherine Cullen:** So you did something pretty extraordinary this week. You personally argued this case before the Supreme Court. Why?
-
-**Doug Downie:** For a couple of reasons. One, to impress upon the court and to others that this really is a serious issue. And I've been managing thoughts about the Notwithstanding Clause for decades, quite frankly. And I felt very strongly about Ontario's position.
-
-**Catherine Cullen:** Okay, and this is a complex issue. So let's try to break this into a few parts. One of the things you argued against is having a court weigh in on whether a law violates the Charter if the Notwithstanding Clause has been used. Why is that a problem?
-
-**Doug Downie:** Well, the fact of the matter is, the law doesn't violate the Charter if the Notwithstanding Clause is used. And that's how it was designed. When the framers put together the Charter, they very specifically reserved Section 33 for the legislatures to have the last word. And that is core to what our position is.
-
-**Catherine Cullen:** Yeah, well — and so perhaps that was a poor choice of words on my part — but it's the violation of Charter rights. Like, I take your point that the Notwithstanding Clause means it's not a violation of the Charter, but those essential rights that are otherwise protected by the Charter — why shouldn't citizens know whether or not this law would violate them, were the Notwithstanding Clause not used?
-
-**Doug Downie:** I give credit to the electorate. They are smart enough to understand what is being decided when the Notwithstanding Clause is invoked. It's really important that the electorate have the last word. And the five-year sunset of the use of the Notwithstanding Clause is combined with the electoral cycle, which is at minimum or at maximum every five years. So it's tied to that. And they did that on purpose. They wanted the legislatures to be able to reflect the regional diversity that Canada has.
-
-**Catherine Cullen:** You say you give credit to the electorate. The Chief Justice, Richard Wagner, actually said in the course of these hearings, as he was asking some of the folks involved questions, couldn't this be used — a statement from a court — to inform the electorate? What's wrong with the electorate, if you give credit to them? What's wrong with them having a bit more information?
-
-**Doug Downie:** One of the things I said in my submissions to the Supreme Court is that we have to look at the practical implications of what that means. For us to have courts over a series of years give potentially different interpretations is not going to provide any sort of clarity for the electorate, when they may have an election in between those conversations, from the Superior Court to the Court of Appeal up to a leave for the Supreme Court and then ultimately potentially a hearing at the Supreme Court. That takes years to happen.
-
-**Catherine Cullen:** But courts do that all the time on a variety of other issues.
-
-**Doug Downie:** Absolutely. But there is no remedy to be given by the court because Section 33 was invoked and, by definition, makes the law valid.
-
-**Catherine Cullen:** Your government has used the Notwithstanding Clause twice. Once in 2021 around third-party advertising ahead of elections and the second time to impose a new contract on education workers to prevent a strike, although ultimately that law was repealed. I wonder, is there any discomfort around passing a law knowing it might violate Charter rights, were it not for the Notwithstanding Clause?
-
-**Doug Downie:** I think it's something that you, as a legislator, have to turn your mind to...
-
-*[Transcript not recovered beyond this point. A hallucination loop in the source audio (approx. 37:56–49:32) obscures the remainder of the Downie interview. The interview ran approximately 11.5 additional minutes.]*
-
----
-
-## Kyle Pax — energy sector
-
-*[Beginning of this segment falls within the unrecovered gap. The following resumes at approximately 49:32.]*
-
-**Industry source:** It's amazing the number of times people ask me — they think Canada's hoarding its own oil because the world is screaming for it. I'm like, no, no, we're not hoarding it. But we do need to figure out a way to prove to the rest of the world that if we are a stable energy superpower, it's time to deliver.
-
-**Kyle Pax:** And Catherine, they want 2026 to be a year of action — seeing projects approved and seeing shovels in the ground.
-
-**Catherine Cullen:** You mentioned at the beginning of our conversation, Kyle, that Canada used to be talking a lot more about the environment, given the pressure we're seeing from the war on Iran. Is there still a conversation about environmental concerns around pipelines, sustainability, or has that sort of fallen away right now?
-
-**Kyle Pax:** It's not a major focus, which I think reflects what's happening in the world. Climate change is a concern around the globe, but over the last five years, it has become less of a priority. The average person generally is more concerned about inflation and the cost of living. The Russia invasion of Ukraine caused an energy crisis, and people put their attention on energy security and grappling with these skyrocketing utility prices. And we're seeing that again now with the situation in the Middle East.
-
-Still, some industry executives here say climate is a priority, and that their companies continue to focus on cutting emissions. And the reason is because they want to future-proof their projects. Some of these big companies are spending billions of dollars — or tens of billions of dollars — on new facilities to produce energy. And they want to make sure that they're producing low-carbon sources of energy because they have customers around the world that care about reducing emissions, and they're going to be continuing to care about environmental performance for decades to come.
-
-**Catherine Cullen:** Lots to think about here. Thank you so much, Kyle.
-
-**Kyle Pax:** Thank you.
-
-**Catherine Cullen:** The CBC's Kyle Pax.
