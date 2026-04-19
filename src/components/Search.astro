@@ -2,7 +2,7 @@
 // Pagefind search widget — only works on built site (pnpm preview), not pnpm dev
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
-<div id="search" style="display:inline-block"></div>
+<div id="search" style="display:inline-block; position:relative;"></div>
 
 <link href={`${base}pagefind/pagefind-ui.css`} rel="stylesheet" />
 <script src={`${base}pagefind/pagefind-ui.js`} is:inline></script>
@@ -21,14 +21,59 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 </script>
 
 <style is:global>
-  .pagefind-ui { --pagefind-ui-font: system-ui, sans-serif; font-size: 0.875rem; }
-  .pagefind-ui__search-input { border: 1px solid #ddd; border-radius: 4px; padding: 0.3rem 0.6rem; font-size: 0.8rem; width: 160px; }
-  .pagefind-ui__search-input:focus { outline: 2px solid #e63946; border-color: transparent; }
-  .pagefind-ui__drawer { position: absolute; right: 0; top: 100%; z-index: 100; background: #fff; border: 1px solid #e0e0e0; border-radius: 4px; min-width: 320px; max-height: 400px; overflow-y: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 0.75rem; }
-  .pagefind-ui__result { padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
+  .pagefind-ui {
+    --pagefind-ui-font: "Public Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.875rem;
+  }
+  .pagefind-ui__search-input {
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    padding: 6px 12px 5px;
+    font-size: 13px;
+    width: 160px;
+    background: var(--white);
+    color: var(--ink);
+    outline: none;
+  }
+  .pagefind-ui__search-input::placeholder { color: var(--fg-subtle); }
+  .pagefind-ui__search-input:focus { outline: 3px solid var(--signal); outline-offset: 2px; }
+  .pagefind-ui__drawer {
+    position: absolute; right: 0; top: calc(100% + 6px); z-index: 100;
+    background: var(--white);
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    min-width: 320px; max-height: 400px; overflow-y: auto;
+    box-shadow: 0 4px 0 0 var(--ink);
+    padding: 0.75rem;
+  }
+  .pagefind-ui__search-clear {
+    outline: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--fg-muted);
+    padding: 0 6px;
+  }
+  .pagefind-ui__search-clear:focus-visible {
+    outline: 3px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  .pagefind-ui__result {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  }
   .pagefind-ui__result:last-child { border-bottom: none; }
-  .pagefind-ui__result-title { font-weight: 600; color: #1a1a1a; text-decoration: none; }
-  .pagefind-ui__result-title:hover { color: #e63946; }
-  .pagefind-ui__result-excerpt { color: #666; font-size: 0.8rem; margin-top: 0.2rem; }
+  .pagefind-ui__result-title { font-weight: 700; color: var(--ink); text-decoration: none; }
+  .pagefind-ui__result-title:hover { color: var(--signal-ink); }
+  .pagefind-ui__result-excerpt { color: var(--fg-muted); font-size: 0.8rem; margin-top: 0.2rem; }
+  .pagefind-ui__result-tags { margin-top: 0.3rem; display: flex; flex-wrap: wrap; gap: 4px; }
+  .pagefind-ui__result-tag {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--signal-ink); background: var(--cream-2);
+    border: 1px solid color-mix(in oklab, var(--ink) 20%, transparent);
+    border-radius: 3px; padding: 2px 6px 1px; line-height: 1;
+  }
   header { position: relative; }
 </style>
