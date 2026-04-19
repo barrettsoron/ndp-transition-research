@@ -187,10 +187,37 @@ const fixedSections = navSections.filter(s => !isDateSection(s));
         border-radius: 999px; padding: 5px 11px;
         cursor: pointer; line-height: 1; white-space: nowrap;
         transition: border-color 120ms, color 120ms;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.01em; position: relative;
       }
       #cmd-trigger:hover { border-color: var(--ink); color: var(--ink); }
       #cmd-trigger svg { flex-shrink: 0; }
+      #cmd-trigger .cmd-kbd {
+        font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+        color: var(--fg-subtle);
+        padding: 1px 5px;
+        border: 1px solid color-mix(in oklab, var(--ink) 18%, transparent);
+        border-radius: 4px; letter-spacing: 0.02em;
+        transition: color 120ms, border-color 120ms;
+      }
+      #cmd-trigger:hover .cmd-kbd { color: var(--fg-muted); border-color: color-mix(in oklab, var(--ink) 35%, transparent); }
+
+      /* ─── First-visit tooltip ─── */
+      #cmd-hint {
+        position: absolute; top: calc(100% + 10px); right: 0;
+        background: var(--ink); color: var(--cream);
+        font-size: 12px; font-weight: 600; white-space: nowrap;
+        padding: 7px 12px; border-radius: 6px;
+        box-shadow: 0 3px 0 0 color-mix(in oklab, var(--ink) 60%, transparent);
+        pointer-events: none; z-index: 300;
+        opacity: 0; transform: translateY(-4px);
+        transition: opacity 200ms, transform 200ms;
+      }
+      #cmd-hint::before {
+        content: ''; position: absolute; bottom: 100%; right: 18px;
+        border: 5px solid transparent;
+        border-bottom-color: var(--ink);
+      }
+      #cmd-hint.visible { opacity: 1; transform: translateY(0); }
 
       /* ─── Command bar modal ─── */
       #cmd-bar {
@@ -313,12 +340,14 @@ const fixedSections = navSections.filter(s => !isDateSection(s));
           <div class="search-wrap">
             <slot name="search" />
           </div>
-          <button id="cmd-trigger" aria-label="Open command bar (⌘K)" title="⌘K">
+          <button id="cmd-trigger" aria-label="Open command bar (⌘K)">
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
               <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.5"/>
               <line x1="8.7" y1="8.7" x2="12" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             Search
+            <span class="cmd-kbd" aria-hidden="true">⌘K</span>
+            <span id="cmd-hint" role="tooltip">Press ⌘K to search anytime</span>
           </button>
         </nav>
       </div>
@@ -502,6 +531,23 @@ const fixedSections = navSections.filter(s => !isDateSection(s));
 
         backdrop.addEventListener('click', close);
         trigger?.addEventListener('click', open);
+
+        // First-visit hint
+        const hint = document.getElementById('cmd-hint');
+        if (hint && !localStorage.getItem('cmd-hint-seen')) {
+          setTimeout(() => { hint.classList.add('visible'); }, 1200);
+          setTimeout(() => { hint.classList.remove('visible'); }, 5500);
+          trigger?.addEventListener('click', () => {
+            hint.classList.remove('visible');
+            localStorage.setItem('cmd-hint-seen', '1');
+          }, { once: true });
+          document.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey || e.altKey) && (e.key === 'k' || e.key === 'K')) {
+              hint.classList.remove('visible');
+              localStorage.setItem('cmd-hint-seen', '1');
+            }
+          }, { once: true });
+        }
 
         document.addEventListener('keydown', e => {
           const k = e.key === 'k' || e.key === 'K';
