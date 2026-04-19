@@ -1,7 +1,7 @@
 ---
 import Base from './Base.astro';
 import Search from '../components/Search.astro';
-import { getSectionLabel } from '../lib/sections';
+import { getSectionLabel, isConventionSection, isDateSection } from '../lib/sections';
 
 interface Props {
   title: string;
@@ -16,80 +16,309 @@ interface Props {
   note?: string;
   stub?: boolean;
   section?: string;
+  prevArticle?: { title: string; href: string };
+  nextArticle?: { title: string; href: string };
 }
-const { title, date, author, outlet, source, language, type, speakers, video, note, stub, section } = Astro.props;
-const dateStr = date.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
+const { title, date, author, outlet, source, language, type, speakers, video, note, stub, section, prevArticle, nextArticle } = Astro.props;
+const dateStr = date.toLocaleDateString('en-CA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const sectionLabel = section ? getSectionLabel(section) : null;
+const groupLabel = section ? (isConventionSection(section) ? 'Convention' : isDateSection(section) ? 'Transition' : null) : null;
 
-// Use note as OG description, or fall back to outlet + date
 const ogDesc = note || (outlet ? `${outlet} · ${dateStr}` : dateStr);
+const lang = language ?? 'en';
 ---
 <Base title={title} description={ogDesc} ogType="article">
   <Search slot="search" />
   <style>
-    h1 { font-size: 1.75rem; line-height: 1.3; margin-bottom: 0.75rem; }
-    .breadcrumb { font-family: system-ui, sans-serif; font-size: 0.8rem; color: #999; margin-bottom: 1.25rem; display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
-    .breadcrumb a { color: #999; text-decoration: none; }
-    .breadcrumb a:hover { color: #e63946; }
-    .breadcrumb span { color: #ccc; }
-    .meta { font-family: system-ui, sans-serif; font-size: 0.85rem; color: #555; margin-bottom: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-    .badge { background: #f0f0f0; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    .source-link { color: #e63946; text-decoration: none; }
-    .source-link:hover { text-decoration: underline; }
-    .stub-warning { background: #fff8e1; border-left: 3px solid #f59e0b; padding: 0.75rem 1rem; font-family: system-ui, sans-serif; font-size: 0.875rem; color: #78350f; margin: 1rem 0 1.5rem; border-radius: 0 4px 4px 0; }
-    .stub-warning a { color: #b45309; }
-    .content { margin-top: 1.75rem; }
-    .content :global(h2) { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
-    .content :global(p) { margin-bottom: 1rem; }
-    .content :global(ul), .content :global(ol) { margin: 0 0 1rem 1.5rem; }
-    .content :global(li) { margin-bottom: 0.25rem; }
-    .content :global(hr) { border: none; border-top: 1px solid #e0e0e0; margin: 1.5rem 0; }
-    .content :global(blockquote) { border-left: 3px solid #e63946; padding-left: 1rem; color: #555; font-style: italic; margin: 1rem 0; }
-    .note-block { background: #f8f8f8; border-left: 3px solid #ccc; padding: 0.75rem 1rem; font-family: system-ui, sans-serif; font-size: 0.875rem; color: #555; margin-bottom: 1rem; }
+    .article-page { padding: 40px 0 0; }
+    .prose-wrap { max-width: 680px; }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      font-size: 12px; font-weight: 600;
+      color: var(--fg-muted); letter-spacing: 0.02em;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--fg-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--signal-ink); }
+    .breadcrumb .sep { color: var(--signal); font-weight: 800; }
+
+    /* Article head */
+    .article-head { margin-bottom: 36px; }
+    .article-head .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--signal-ink); margin-bottom: 18px;
+    }
+    .article-head .kicker::before {
+      content: ""; width: 18px; height: 2px; background: var(--signal);
+    }
+    .article-head h1 {
+      font-weight: 900;
+      font-size: clamp(30px, 3.6vw, 44px);
+      line-height: 1.05; letter-spacing: -0.025em;
+      margin: 0 0 18px; max-width: 22ch; text-wrap: balance;
+    }
+    .article-head .standfirst {
+      font-weight: 500; font-size: 18px;
+      line-height: 1.45; color: var(--fg);
+      margin: 0 0 24px; max-width: 62ch;
+    }
+    .byline-row {
+      display: flex; flex-wrap: wrap;
+      align-items: center; gap: 10px 18px;
+      padding: 14px 0;
+      border-top: 1.5px solid var(--ink);
+      border-bottom: 1.5px solid var(--ink);
+      font-size: 13px;
+    }
+    .byline-row .by { font-weight: 700; color: var(--ink); }
+    .byline-row .outlet { font-weight: 700; color: var(--ink); }
+    .byline-row .sep { color: var(--signal); font-weight: 900; }
+    .byline-row .date {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--fg-muted); letter-spacing: 0.02em;
+    }
+    .byline-row .badge {
+      font-weight: 800; font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 3px 9px 2px; border: 1.5px solid var(--ink);
+      border-radius: 999px; line-height: 1;
+    }
+    .byline-row .badge.fr { background: var(--cream-2); }
+    .byline-row .badge.en-fr { background: var(--cream-2); }
+    .source-link {
+      margin-left: auto; font-weight: 800; font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--signal-ink); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      border-bottom: 1.5px solid var(--signal); padding-bottom: 1px;
+    }
+    .source-link:hover { color: var(--ink); border-color: var(--ink); }
+
+    /* Note block */
+    .note-block {
+      margin-top: 20px; padding: 14px 18px;
+      background: var(--cream-2); border-left: 3px solid var(--signal);
+      font-size: 13.5px; line-height: 1.5; color: var(--fg);
+      border-radius: 0 4px 4px 0;
+    }
+    .note-block strong {
+      font-weight: 800; text-transform: uppercase;
+      font-size: 10.5px; letter-spacing: 0.18em;
+      color: var(--signal-ink); display: block; margin-bottom: 4px;
+    }
+
+    /* Stub block */
+    .stub-block {
+      background: var(--hope); border: 1.5px solid var(--ink);
+      border-radius: 4px; padding: 18px 22px; margin: 24px 0;
+      font-size: 14px; line-height: 1.5; color: var(--ink);
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: 16px; align-items: center;
+    }
+    .stub-block .icon {
+      width: 36px; height: 36px; background: var(--ink);
+      color: var(--hope); display: inline-flex;
+      align-items: center; justify-content: center;
+      font-weight: 900; font-size: 18px; flex-shrink: 0;
+    }
+    .stub-block strong {
+      display: block; font-weight: 800; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2px;
+    }
+    .stub-block a {
+      color: var(--ink); font-weight: 800; font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      text-decoration: none; border: 1.5px solid var(--ink);
+      padding: 8px 14px 7px; border-radius: 999px;
+      background: var(--cream); white-space: nowrap;
+    }
+    .stub-block a:hover { background: var(--ink); color: var(--hope); }
+
+    /* Prose */
+    .prose {
+      font-weight: 400; font-size: 17.5px;
+      line-height: 1.65; color: var(--ink);
+    }
+    .prose :global(p) { margin: 0 0 1.1em; max-width: none; }
+    .prose :global(h2) {
+      font-weight: 900; font-size: 24px; line-height: 1.15;
+      letter-spacing: -0.015em; margin: 2.2em 0 0.5em;
+      padding-top: 1.2em;
+      border-top: 1.5px solid color-mix(in oklab, var(--ink) 20%, transparent);
+    }
+    .prose :global(h3) {
+      font-weight: 800; font-size: 18px; line-height: 1.2;
+      letter-spacing: -0.01em; margin: 1.8em 0 0.4em;
+    }
+    .prose :global(blockquote) {
+      margin: 1.6em 0; padding: 18px 24px;
+      border-left: 4px solid var(--signal);
+      background: var(--cream-2); font-weight: 500;
+      font-size: 18.5px; line-height: 1.45;
+      color: var(--ink); font-style: normal; max-width: none;
+    }
+    .prose :global(blockquote p) { margin: 0 0 0.8em; }
+    .prose :global(blockquote p:last-child) { margin-bottom: 0; }
+    .prose :global(blockquote cite) {
+      display: block; margin-top: 10px;
+      font-size: 12px; font-weight: 700; font-style: normal;
+      letter-spacing: 0.04em; color: var(--fg-muted);
+    }
+    .prose :global(blockquote cite::before) { content: "— "; color: var(--signal-ink); }
+    .prose :global(hr) {
+      border: 0; height: 1.5px;
+      background: var(--ink); margin: 2em 0; max-width: 120px;
+    }
+    .prose :global(ul), .prose :global(ol) { margin: 0 0 1.2em 1.4em; padding: 0; }
+    .prose :global(li) { margin-bottom: 0.4em; }
+    .prose :global(a) {
+      color: var(--signal-ink); text-decoration: underline;
+      text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+    }
+    .prose :global(a:hover) { background: var(--signal); color: var(--ink); text-decoration: none; }
+    .prose :global(strong) { font-weight: 700; }
+    .prose :global(table) { border-collapse: collapse; width: 100%; margin: 1.5em 0; font-size: 15px; }
+    .prose :global(th) { font-weight: 800; text-align: left; border-bottom: 2px solid var(--ink); padding: 8px 12px; }
+    .prose :global(td) { padding: 8px 12px; border-bottom: 1px solid color-mix(in oklab, var(--ink) 15%, transparent); }
+
+    /* Speakers / video */
+    .speakers-note, .video-link {
+      font-size: 13px; color: var(--fg-muted); margin-top: 1rem;
+    }
+    .video-link a { color: var(--signal-ink); }
+
+    /* Article footer nav */
+    .article-foot {
+      margin-top: 56px; padding: 28px 0 0;
+      border-top: 1.5px solid var(--ink);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .nav-card {
+      display: block; padding: 16px 18px;
+      border: 1.5px solid var(--ink); border-radius: 8px;
+      text-decoration: none; color: var(--ink);
+      background: var(--white);
+      transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+    }
+    .nav-card:hover { transform: translateY(-2px); box-shadow: 0 4px 0 0 var(--ink); }
+    .nav-card .dir {
+      font-weight: 800; font-size: 10px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--signal-ink); margin-bottom: 6px;
+    }
+    .nav-card.next { text-align: right; }
+    .nav-card .t { font-weight: 700; font-size: 14px; line-height: 1.3; }
+
+    @media (max-width: 820px) {
+      .article-foot { grid-template-columns: 1fr; }
+      .stub-block { grid-template-columns: auto 1fr; }
+      .stub-block a { grid-column: 1 / -1; justify-self: start; }
+    }
   </style>
 
-  <div class="breadcrumb" data-pagefind-ignore>
-    <a href={base}>Home</a>
-    {sectionLabel && section && (
-      <>
-        <span>→</span>
-        <a href={`${base}${section}/`}>{sectionLabel}</a>
-      </>
-    )}
-    <span>→</span>
-    <span>{title.length > 50 ? title.slice(0, 50) + '…' : title}</span>
-  </div>
+  <section class="article-page">
+    <div class="container">
+      <div class="prose-wrap">
 
-  <h1>{title}</h1>
+        <nav class="breadcrumb" data-pagefind-ignore>
+          <a href={base}>Home</a>
+          {groupLabel && (
+            <>
+              <span class="sep">→</span>
+              <span>{groupLabel}</span>
+            </>
+          )}
+          {sectionLabel && section && (
+            <>
+              <span class="sep">→</span>
+              <a href={`${base}${section}/`}>{sectionLabel}</a>
+            </>
+          )}
+          <span class="sep">→</span>
+          <span>{title.length > 55 ? title.slice(0, 55) + '…' : title}</span>
+        </nav>
 
-  <div class="meta">
-    <span>{dateStr}</span>
-    {author && <span>{author}</span>}
-    {outlet && <span>{outlet}</span>}
-    {language && language !== 'en' && <span class="badge">{language.toUpperCase()}</span>}
-    {type && type !== 'article' && <span class="badge">{type}</span>}
-    {source && <a class="source-link" href={source} target="_blank" rel="noopener">Original source →</a>}
-  </div>
+        <header class="article-head">
+          {(outlet || type) && (
+            <div class="kicker">
+              {outlet}{outlet && type && type !== 'article' ? ' · ' : ''}{type && type !== 'article' ? type : ''}
+            </div>
+          )}
+          <h1>{title}</h1>
+          {!stub && note && <p class="standfirst">{note}</p>}
+          <div class="byline-row">
+            {author && <span class="by">By {author}</span>}
+            {author && outlet && <span class="sep">·</span>}
+            {outlet && <span class="outlet" data-pagefind-meta="outlet">{outlet}</span>}
+            {(author || outlet) && <span class="sep">·</span>}
+            <time class="date">{dateStr}</time>
+            {lang !== 'en' && <span class={`badge ${lang}`}>{lang.toUpperCase()}</span>}
+            {type && type !== 'article' && <span class="badge">{type}</span>}
+            {source && <a class="source-link" href={source} target="_blank" rel="noopener">Original source ↗</a>}
+          </div>
+          {!stub && !note && speakers && speakers.length > 0 && (
+            <div class="note-block">
+              <strong>Speakers</strong>
+              {speakers.join(', ')}
+            </div>
+          )}
+        </header>
 
-  {speakers && speakers.length > 0 && (
-    <div class="meta">Speakers: {speakers.join(', ')}</div>
-  )}
-  {video && (
-    <div class="meta"><a class="source-link" href={video} target="_blank" rel="noopener">Video →</a></div>
-  )}
-  {note && <div class="note-block">{note}</div>}
+        {stub ? (
+          <div class="stub-block">
+            <span class="icon" aria-hidden="true">!</span>
+            <div>
+              <strong>Full text not archived</strong>
+              {source
+                ? `This article is behind a paywall or otherwise unavailable. Metadata and headline preserved for reference.`
+                : `Full text not yet available. Metadata preserved for reference.`
+              }
+            </div>
+            {source && <a href={source} target="_blank" rel="noopener">Read the original ↗</a>}
+          </div>
+        ) : (
+          <>
+            {note && (
+              <div class="note-block">
+                <strong>Note</strong>
+                {note}
+              </div>
+            )}
+            <article class="prose">
+              <slot />
+            </article>
+            {speakers && speakers.length > 0 && !note && (
+              <div class="speakers-note">Speakers: {speakers.join(', ')}</div>
+            )}
+            {video && (
+              <div class="video-link"><a href={video} target="_blank" rel="noopener">Video recording →</a></div>
+            )}
+          </>
+        )}
 
-  {stub && (
-    <div class="stub-warning">
-      Full text not yet archived.
-      {source && <> <a href={source} target="_blank" rel="noopener">Read the original →</a></>}
+        {(prevArticle || nextArticle) && (
+          <div class="article-foot">
+            {prevArticle ? (
+              <a class="nav-card prev" href={prevArticle.href}>
+                <div class="dir">← Previous in section</div>
+                <div class="t">{prevArticle.title}</div>
+              </a>
+            ) : <div />}
+            {nextArticle && (
+              <a class="nav-card next" href={nextArticle.href}>
+                <div class="dir">Next in section →</div>
+                <div class="t">{nextArticle.title}</div>
+              </a>
+            )}
+          </div>
+        )}
+
+      </div>
     </div>
-  )}
-
-  {!stub && (
-    <div class="content">
-      <slot />
-    </div>
-  )}
+  </section>
 </Base>

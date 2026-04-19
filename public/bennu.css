@@ -1,0 +1,239 @@
+/* ──────────────────────────────────────────────────────────────
+   Bennu 2026 — NDP Transition Design System
+   Core tokens: colour, type, spacing, radii, shadows, motion
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Primary palette ─── */
+  --solidarity-orange: #FF5100;   /* Primary brand colour — present on every surface */
+  --newsprint-white:   #FFF3D9;   /* Warm paper — default surface */
+  --inky-black:        #221F1F;   /* Primary text, rules, solid marks */
+
+  /* ─── Secondary palette ─── */
+  --renewal-green:     #5D8D4F;   /* Climate, care, renewal — supporting voice */
+  --hope-yellow:       #FFC72C;   /* Optimism, highlights, moments of lift */
+
+  /* ─── Semantic aliases (for ergonomics in CSS) ─── */
+  --signal:       var(--solidarity-orange);   /* alias — urgency, CTA */
+  --signal-ink:   #D53E00;                    /* Pressed / link text on cream */
+  --ink:          var(--inky-black);
+  --ink-2:        #231F20;                    /* Minor variant from source SVGs */
+  --cream:        var(--newsprint-white);
+  --cream-2:      #F6E9CD;                    /* Cream recessed surface */
+  --white:        #FFFFFF;
+  --movement:     var(--renewal-green);       /* alias */
+  --movement-ink: #3F6534;                    /* Green darkened for link text */
+  --hope:         var(--hope-yellow);         /* alias */
+
+  /* ─── Semantic aliases ─── */
+  --bg:           var(--cream);
+  --bg-elev:      var(--white);
+  --bg-inverse:   var(--ink);
+  --fg:           var(--ink);
+  --fg-muted:     color-mix(in oklab, var(--ink) 62%, var(--cream));
+  --fg-subtle:    color-mix(in oklab, var(--ink) 38%, var(--cream));
+  --fg-inverse:   var(--cream);
+  --rule:         color-mix(in oklab, var(--ink) 18%, var(--cream));
+  --rule-strong:  var(--ink);
+  --accent:       var(--signal);
+  --link:         var(--signal-ink);
+  --focus-ring:   var(--signal);
+
+  /* ─── Type: families ─── */
+  /* One typeface does everything: Public Sans.
+     The voice comes from weight, scale, and colour — not face variety.
+     · 900 (Black)       display, slogans, H1/H2
+     · 800 (Extra Bold)  H3/H4, standfirsts, buttons, eyebrows
+     · 500 (Medium)      ledes, standfirst paragraphs
+     · 400 (Regular)     body, list items, fine print
+     Public Sans is open-source (US Web Design System). Use it for both
+     display and body. No secondary display face in digital product.   */
+  --font-display: "Public Sans", -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display-alt: var(--font-display);  /* deprecated alias — do not use */
+  --font-body:    "Public Sans", -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:    ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+
+  /* ─── Type: scale (fluid, 1.25 minor-third) ─── */
+  --fs-50:  clamp(0.75rem,  0.72rem + 0.15vw, 0.813rem); /* caption */
+  --fs-75:  clamp(0.875rem, 0.85rem  + 0.15vw, 0.938rem);/* small */
+  --fs-100: 1rem;                                         /* body */
+  --fs-200: clamp(1.125rem, 1.08rem + 0.25vw, 1.25rem);   /* lede */
+  --fs-300: clamp(1.375rem, 1.3rem  + 0.4vw,  1.625rem);  /* h5 */
+  --fs-400: clamp(1.75rem,  1.6rem  + 0.75vw, 2.125rem);  /* h4 */
+  --fs-500: clamp(2.25rem,  2rem    + 1.25vw, 3rem);      /* h3 */
+  --fs-600: clamp(3rem,     2.5rem  + 2.5vw,  4.25rem);   /* h2 */
+  --fs-700: clamp(4rem,     3rem    + 5vw,    6.5rem);    /* h1 */
+  --fs-800: clamp(5.5rem,   3.5rem  + 10vw,   10rem);     /* display */
+
+  /* ─── Type: weights & tracking ─── */
+  --fw-reg:       400;
+  --fw-med:       500;
+  --fw-semi:      600;
+  --fw-bold:      700;
+  --fw-black:     900;
+
+  --lh-tight:     1.02;
+  --lh-snug:      1.15;
+  --lh-normal:    1.45;
+  --lh-loose:     1.6;
+
+  --tr-tighter:   -0.03em;   /* display */
+  --tr-tight:     -0.015em;  /* headings */
+  --tr-normal:    0em;
+  --tr-wide:      0.04em;    /* eyebrows, small caps */
+  --tr-widest:    0.14em;    /* label caps */
+
+  /* ─── Spacing (4px base) ─── */
+  --s-0:   0;
+  --s-1:   0.25rem;   /*  4 */
+  --s-2:   0.5rem;    /*  8 */
+  --s-3:   0.75rem;   /* 12 */
+  --s-4:   1rem;      /* 16 */
+  --s-5:   1.5rem;    /* 24 */
+  --s-6:   2rem;      /* 32 */
+  --s-7:   3rem;      /* 48 */
+  --s-8:   4rem;      /* 64 */
+  --s-9:   6rem;      /* 96 */
+  --s-10:  8rem;      /* 128 */
+
+  /* ─── Radii ─── */
+  --r-0:   0;
+  --r-1:   2px;
+  --r-2:   4px;
+  --r-3:   8px;
+  --r-4:   14px;
+  --r-pill:999px;
+
+  /* ─── Shadows (warm, not neutral) ─── */
+  --shadow-1: 0 1px 0 0 color-mix(in oklab, var(--ink) 8%, transparent);
+  --shadow-2: 0 2px 0 0 var(--ink);                 /* hard drop — campaign look */
+  --shadow-3: 0 4px 0 0 var(--ink);                 /* stacked card */
+  --shadow-lift: 0 12px 28px -12px color-mix(in oklab, var(--ink) 35%, transparent);
+
+  /* ─── Motion ─── */
+  --ease-out:    cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1:       120ms;
+  --dur-2:       200ms;
+  --dur-3:       320ms;
+  --dur-4:       600ms;
+
+  /* ─── Layout ─── */
+  --container:   min(1200px, 100% - 2 * var(--s-5));
+  --container-narrow: min(760px, 100% - 2 * var(--s-5));
+}
+
+/* ─── Layout utilities ─── */
+.container { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+.container-narrow { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+/* ─── Base reset / sensible defaults ─── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-100);
+  line-height: var(--lh-normal);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ─── Typography classes ─── */
+.display, h1.display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-800);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tighter);
+}
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-700);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tighter);
+  margin: 0 0 var(--s-5);
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-600);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tighter);
+  margin: 0 0 var(--s-4);
+}
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-500);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  margin: 0 0 var(--s-3);
+}
+h4, .h4 {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--fs-400);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  margin: 0 0 var(--s-3);
+}
+h5, .h5 {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-300);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  margin: 0 0 var(--s-2);
+}
+p { margin: 0 0 var(--s-4); max-width: 62ch; text-wrap: pretty; }
+.lede {
+  font-size: var(--fs-200);
+  line-height: var(--lh-normal);
+  color: var(--fg);
+  max-width: 56ch;
+}
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-75);
+  letter-spacing: var(--tr-widest);
+  text-transform: uppercase;
+  color: var(--signal-ink);
+}
+.caption {
+  font-size: var(--fs-50);
+  color: var(--fg-muted);
+  letter-spacing: var(--tr-wide);
+}
+.mono { font-family: var(--font-mono); }
+
+/* ─── Utility: inverse surface ─── */
+.on-ink {
+  background: var(--ink);
+  color: var(--cream);
+}
+.on-ink .eyebrow { color: var(--signal); }
+.on-ink a { color: var(--cream); }
+
+.on-signal {
+  background: var(--signal);
+  color: var(--ink);
+}
+
+/* ─── Prefers-reduced-motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
