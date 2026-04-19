@@ -8,7 +8,7 @@ A research notebook and source index of news coverage, speeches, transcripts, an
 
 This is a personal research notebook and source index on the 2026 NDP leadership transition. It hosts my notes, source clippings, and transcripts for my own research and criticism (*Copyright Act*, ss. 29 / 29.1), and reproduces source material on that basis. Copyright remains with the original publishers.
 
-The repository and deployed site live on public infrastructure because that's where my tooling runs, not because the notebook is for general audiences. A `robots.txt` disallows all crawlers and every rendered page carries a `noindex` directive, so the site is publicly accessible but not publicly findable. If you've arrived here from a direct link, welcome — but please read each source at its own publication, not here.
+The repository and site are publicly accessible but not publicly findable: `robots.txt` disallows all crawlers and every page carries a `noindex` directive. If you've arrived here from a direct link, welcome — but please read each source at its own publication, not here.
 
 ## Scope
 
