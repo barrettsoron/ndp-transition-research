@@ -18,9 +18,10 @@ march-30/              # Post-convention reaction
 march-31/              # Stephen Lewis's death
 april-01/              # Continuing coverage
 stephen-lewis/         # Curated public record — speeches, commentary
-transcript-archive/    # Transcripts of publicly available videos
 src/                   # Astro site source (layouts, pages, content config)
 ```
+
+Transcripts go inline in the relevant date folder alongside other content from that day — not in a separate directory. A transcript from April 16 belongs in `april-16/`, named following the standard convention.
 
 New dated folders are added as coverage continues (`april-02/`, `april-03/`, etc.).
 
@@ -138,6 +139,18 @@ The site dynamically discovers sections from the content collection at build tim
 
 - **Defuddle** (`defuddle parse <url> --md`): Used to extract clean markdown from web pages. Strips nav, ads, and clutter. Preferred over raw fetching.
 - **gh CLI**: Used for creating branches and PRs.
+
+## Handling paywalled content
+
+When Defuddle returns only nav elements, a stub, or a login wall, use this fallback chain:
+
+**1. Wayback Machine** — try `defuddle parse "https://web.archive.org/web/<url>" --md`. Non-profit, trustworthy, but coverage of paywalled Canadian news is inconsistent.
+
+**2. archive.ph** — try `defuddle parse "https://archive.ph/<url>" --md`. Coverage is better than Wayback for recent Canadian outlets.
+
+> **Known risk with archive.ph**: In January–February 2026, archive.today's operator was documented weaponizing its CAPTCHA page to route visitor traffic into a DDoS attack, and Wikipedia banned the service after finding evidence of tampered snapshots. Using archive.ph as a *reading* tool is lower-risk than citing it as a source, but the platform is not trustworthy. Treat content extracted via archive.ph as plausibly accurate but not authoritative, and prefer Wayback Machine whenever it has coverage.
+
+**3. Stub** — if both fail, create a stub with `stub: true` in the frontmatter. A stub is the right outcome for content that genuinely can't be extracted; it preserves the metadata and source URL for future reference.
 
 ## Worktree discipline
 
